@@ -200,3 +200,9 @@
   - issue-tls-certs-newkey
   - issue-tls-certs
   - verify-tls-certs
+
+- name: Set Facts for certificate
+  set_fact:
+      acme_rootchain_file: "{{ keys_path }}{{ key_name }}-rootchain.pem"
+      acme_cert_file: "{{ keys_path }}{{ key_name }}.pem"
+      acme_key_file: "{{ keys_path }}{{ key_name }}.key"

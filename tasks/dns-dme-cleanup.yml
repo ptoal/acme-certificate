@@ -1,0 +1,18 @@
+---
+# Clean up DNS challenges for DNS provider DNSMadeEasy 
+- name: Cleaning up challenge DNS entries for domains {{ ', '.join(domains) }} via DNSMadeEasy
+  connection: local
+  dnsmadeeasy:
+    account_key: "{{ dme_account_key }}"
+    account_secret: "{{ dme_account_secret }}"
+    domain: "{{ item.value['dns-01']['record'] |regex_replace('^(?:.*\\.|)([^.]+\\.[^.]+)$', '\\1') }}"
+    record_ttl: 60
+    record_type: TXT
+    record_name: "{{ item.value['dns-01']['record'] |regex_replace('^(.*)(\\.[^.]+\\.[^.]+)$', '\\1') }}" 
+    record_value: "{{ item.value['dns-01']['resource_value'] }}"
+    state: absent
+  run_once: True
+  with_dict: "{{ lets_encrypt_challenge.challenge_data }}"
+  tags:
+  - issue-tls-certs-newkey
+  - issue-tls-certs
